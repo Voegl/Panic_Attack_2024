@@ -216,6 +216,12 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
+        // Wij hebben voor nu de volgende poorten geselecteerd voor deze motors:
+        // leftFront: port 0
+        // leftBack: port 1
+        // rightBack: port 2
+        // rightFront: prot 3
+        // hardwaremap: "hallo robot"
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
