@@ -11,7 +11,7 @@ public class SamplePositionalData {
     Map<SampleCategory, Vector2d> samplePositions;
 
     // Sample IDs geindexeerd vanaf 0
-    Vector2d getSamplePosition(SampleCategory category, int sampleID) {
+    public Vector2d getSamplePosition(SampleCategory category, int sampleID) {
         if (sampleID < 0) {
             throw new RuntimeException("Negatieve sample? Waarom probeer je dit uberhaupt?");
         }

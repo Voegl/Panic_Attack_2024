@@ -9,16 +9,16 @@ public class Slides {
         this.hardwareMap = hardwareMap;
     }
 
-    void init() {
+    public void init() {
     }
 
-    void raise(double offset) {
+    public void raise(double offset) {
         if (offset < 0) {
             throw new ArithmeticException("Wil je de robot kapotmaken of zo?");
         }
     }
 
-    boolean finishedRaising() {
+    public boolean finishedRaising() {
         return false;
     }
 }

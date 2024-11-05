@@ -9,15 +9,15 @@ public class Arm {
         this.hardwareMap = hardwareMap;
     }
 
-    void init() {}
+    public void init() {}
 
-    void turn(ArmPart armPart, double degrees) {
+    public void turn(ArmPart armPart, double degrees) {
         if (armPart == ArmPart.ALL) {
             throw new RuntimeException("Waarom zou je in godsnaam alle onderdelen tegelijk draaien?");
         }
     }
 
-    boolean hasFinishedTurning(ArmPart armPart) {
+    public boolean hasFinishedTurning(ArmPart armPart) {
         return false;
     }
 }
