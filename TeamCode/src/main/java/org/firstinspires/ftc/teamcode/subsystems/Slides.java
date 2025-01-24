@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Slides {
-    HardwareMap hardwareMap;
+    private final HardwareMap hardwareMap;
 
-    DcMotor slideMotor;
-    Servo containerServo;
+    private DcMotor slideMotor;
+    private Servo containerServo;
 
     public Slides(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;

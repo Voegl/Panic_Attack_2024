@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Arm {
-    HardwareMap hardwareMap;
+    private final HardwareMap hardwareMap;
 
-    DcMotor armMotor;
-    Servo angleServo;
-    Servo gripServo;
+    private DcMotor armMotor;
+    private Servo angleServo;
+    private Servo gripServo;
 
     public Arm(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;

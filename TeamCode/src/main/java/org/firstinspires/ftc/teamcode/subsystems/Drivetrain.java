@@ -10,7 +10,7 @@ public class Drivetrain {
     private boolean stealth = true;
     private boolean kowalskiIsAnalysing = true;
 
-    private HardwareMap hardwareMap;
+    private final HardwareMap hardwareMap;
 
     /*
     y
