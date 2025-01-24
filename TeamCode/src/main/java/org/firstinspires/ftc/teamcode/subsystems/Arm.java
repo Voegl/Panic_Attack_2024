@@ -31,8 +31,14 @@ public class Arm {
         angleServo.setPosition(rotation);
     }
 
-    public void setPosition(int position, double power) {
+    public void rotateArm(double power) {
+        armMotor.setPower(power);
+    }
+
+    public void smartyPantsSetPosition(int position, double power, double servoPosition) {
         armMotor.setPower(power);
         armMotor.setTargetPosition(position);
+
+        this.setAnglerAngle(servoPosition);
     }
 }
