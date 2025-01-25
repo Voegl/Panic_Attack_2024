@@ -32,11 +32,12 @@ public class KOPwalski extends OpMode {
         drivetrain.setDriveSpeeds(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.left_trigger - gamepad1.right_trigger);
 
         // - Container
-        if (gamepad1.a) // Drop sample from container
-            slides.setAngle(GuesstimatesProvider.CONTAINER_DROP_ROTATION);
-        else if (gamepad1.b) // Return container to holding position
-            slides.setAngle(GuesstimatesProvider.CONTAINER_HOLD_ROTATION);
-
+//        if (gamepad1.a) // Drop sample from container
+//            slides.setAngle(GuesstimatesProvider.CONTAINER_DROP_ROTATION);
+//        else if (gamepad1.b) // Return container to holding position
+//            slides.setAngle(GuesstimatesProvider.CONTAINER_HOLD_ROTATION);
+        arm.armMotor.setPower(gamepad2.left_stick_y);
+        slides.slideMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
         // Controller 2
         // - Slides
         if (gamepad2.dpad_down) // Initial position
@@ -46,8 +47,13 @@ public class KOPwalski extends OpMode {
         else if (gamepad2.dpad_up) // Upper basket
             slides.setPosition(GuesstimatesProvider.UPPER_BASKET_POSITION, GuesstimatesProvider.SLIDES_SPEED);
 
+        slides.setSpeed(gamepad2.right_trigger - gamepad2.left_trigger);
+
+
         // - Arm
         // - - Movement
+        telemetry.addData("Arm position", arm.armMotor.getCurrentPosition());
+        telemetry.update();
         if (gamepad2.x) // Arm to container
             arm.smartyPantsSetPosition(
                 GuesstimatesProvider.ARM_CONTAINER_POSITION,
@@ -62,9 +68,9 @@ public class KOPwalski extends OpMode {
             );
 
         // Manual control
-        double manualDirection = gamepad2.left_trigger - gamepad2.right_trigger; // This might need inversion
-        if (manualDirection != 0) // This shouldn't always run, that would screw with the automatic positioning
-            arm.rotateArm(manualDirection * GuesstimatesProvider.ARM_SPEED);
+        double manualDirection = gamepad2.right_stick_y * 0.75; // This might need inversion
+//        if (manualDirection != 0) // This shouldn't always run, that would screw with the automatic positioning
+        arm.rotateArm(manualDirection * GuesstimatesProvider.ARM_SPEED);
 
         // - - Rotation
         // for now automatic, see arm.smartyPantsSetPosition

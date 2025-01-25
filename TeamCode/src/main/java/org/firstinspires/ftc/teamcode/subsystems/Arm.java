@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Arm {
     private final HardwareMap hardwareMap;
 
-    private DcMotor armMotor;
+    public DcMotor armMotor;
     private Servo angleServo;
     private Servo gripServo;
 
@@ -36,9 +36,11 @@ public class Arm {
     }
 
     public void smartyPantsSetPosition(int position, double power, double servoPosition) {
+//        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setPower(power);
         armMotor.setTargetPosition(position);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        this.setAnglerAngle(servoPosition);
+        setAnglerAngle(servoPosition);
     }
 }

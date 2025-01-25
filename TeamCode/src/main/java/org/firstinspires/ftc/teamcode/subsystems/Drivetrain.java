@@ -34,9 +34,9 @@ public class Drivetrain {
     }
 
     public void setDriveSpeeds(double x, double y, double turnRate) {
-        rightBack.setPower(x + y - turnRate);
-        leftBack.setPower(-x + y + turnRate);
-        rightFront.setPower(-x + y - turnRate);
-        leftFront.setPower(x + y + turnRate);
+        rightBack.setPower(x - y + turnRate);
+        leftBack.setPower(x + y + turnRate);
+        rightFront.setPower(-x - y + turnRate);
+        leftFront.setPower(x - y - turnRate);
     }
 }
