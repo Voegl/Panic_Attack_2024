@@ -1,79 +1,58 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
-import org.firstinspires.ftc.teamcode.subsystems.GuesstimatesProvider;
-import org.firstinspires.ftc.teamcode.subsystems.Slides;
+import org.firstinspires.ftc.teamcode.kowalski.control.ControlUtils;
+import org.firstinspires.ftc.teamcode.kowalski.hardware.GearRatio;
+import org.firstinspires.ftc.teamcode.kowalski.hardware.PhysicalGearedMotor;
+import org.firstinspires.ftc.teamcode.kowalski.systems.MecanumDrive;
+import org.firstinspires.ftc.teamcode.kowalski.systems.MecanumMotor;
 
 @TeleOp(name = "kOPwalski")
-public class KOPwalski extends OpMode {
-     private Drivetrain drivetrain;
-     private Arm arm;
-     private Slides slides;
+public class KOPwalski extends LinearOpMode {
+    private MecanumDrive drivetrain;
+    private PhysicalGearedMotor motor;
 
     @Override
-    public void init() {
-        this.drivetrain = new Drivetrain(hardwareMap);
-        this.arm = new Arm(hardwareMap);
-        this.slides = new Slides(hardwareMap);
+    public void runOpMode() throws InterruptedException {
+        // Create a PhysicalGearedMotor with a gear ratio of 10:1 with a default ticks per revolution count
+        motor = new PhysicalGearedMotor(hardwareMap.get(DcMotor.class, "test2"), GearRatio.of(10, 1), PhysicalGearedMotor.TicksPerRevolution.RevHDHexMotor);
 
-        this.drivetrain.init();
-        this.arm.init();
-        this.slides.init();
-    }
+        // Create a Mecanum drive and set the signs
+        drivetrain = new MecanumDrive(
+            hardwareMap,
+            "linksvoor", "rechtsvoor",
+            "linksachter", "rechtsachter"
+        );
+        drivetrain
+            .setSigns(MecanumMotor.FrontLeft, "+", "+", "+")
+            .setSigns(MecanumMotor.FrontRight, "-", "+", "-")
+            .setSigns(MecanumMotor.BackLeft, "-", "+", "+")
+            .setSigns(MecanumMotor.BackRight, "+", "+", "-");
 
-    @Override
-    public void loop() {
-        // Controller 1
-        // - Driving
-        drivetrain.setDriveSpeeds(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.left_trigger - gamepad1.right_trigger);
+        waitForStart();
 
-        // - Container
-        if (gamepad1.a) // Drop sample from container
-            slides.setAngle(GuesstimatesProvider.CONTAINER_DROP_ROTATION);
-        else if (gamepad1.b) // Return container to holding position
-            slides.setAngle(GuesstimatesProvider.CONTAINER_HOLD_ROTATION);
+        // Reset the motor to 0 (not necessary, just to showcase)
+        motor.resetEncoder();
 
-        // Controller 2
-        // - Slides
-        if (gamepad2.dpad_down) // Initial position
-            slides.setPosition(0, GuesstimatesProvider.SLIDES_SPEED);
-        else if (gamepad2.dpad_left) // Lower basket
-            slides.setPosition(GuesstimatesProvider.LOWER_BASKET_POSITION, GuesstimatesProvider.SLIDES_SPEED);
-        else if (gamepad2.dpad_up) // Upper basket
-            slides.setPosition(GuesstimatesProvider.UPPER_BASKET_POSITION, GuesstimatesProvider.SLIDES_SPEED);
+        while (opModeIsActive()) {
+            // You can now do this
+            if (gamepad1.a)
+                motor.rotateTo(180);
+            if (gamepad1.b)
+                motor.rotateTo(10);
 
-        // - Arm
-        // - - Movement
-        if (gamepad2.x) // Arm to container
-            arm.smartyPantsSetPosition(
-                GuesstimatesProvider.ARM_CONTAINER_POSITION,
-                GuesstimatesProvider.ARM_SPEED,
-                GuesstimatesProvider.ANGLER_SERVO_CONTAINER_POSITION
-            );
-        else if (gamepad2.y) // Arm to gripping position
-            arm.smartyPantsSetPosition(
-                GuesstimatesProvider.ARM_GRIPPING_POSITION,
-                GuesstimatesProvider.ARM_SPEED,
-                GuesstimatesProvider.ANGLER_SERVO_GRIPPING_POSITION
-            );
+            // Or this
+            motor.rotateBy(ControlUtils.discreteAxis(gamepad1.left_bumper, gamepad1.right_bumper) * 10);
 
-        // Manual control
-        double manualDirection = gamepad2.left_trigger - gamepad2.right_trigger; // This might need inversion
-        if (manualDirection != 0) // This shouldn't always run, that would screw with the automatic positioning
-            arm.rotateArm(manualDirection * GuesstimatesProvider.ARM_SPEED);
-
-        // - - Rotation
-        // for now automatic, see arm.smartyPantsSetPosition
-
-        // - - Gripping
-        if (gamepad2.a) // Open gripper
-            arm.setGripperAngle(GuesstimatesProvider.GRIPPER_SERVO_OPEN_ROTATION);
-        else if (gamepad2.b) // Close gripper
-            arm.setGripperAngle(GuesstimatesProvider.GRIPPER_SERVO_CLOSE_ROTATION);
-
+            // And drive like this
+            // Note how you can do .move().apply() or .rotate().apply() too if you need that!
+            drivetrain
+                .move(gamepad1.left_stick_x, gamepad1.left_stick_y)
+                .rotate(ControlUtils.discreteAxis(gamepad1.left_trigger, gamepad1.right_trigger))
+                .apply();
+        }
     }
 }
