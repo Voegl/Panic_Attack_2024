@@ -16,6 +16,8 @@ public class PhysicalGearedMotor {
         public static int RevHDHexMotor = 28;
     }
 
+    // TODO why doesn't it work manually
+
     /**
      * Create a <code>PhysicalGearedMotor</code> from a DcMotor.
      * @param from The robotcore.hardware.DcMotor to use
@@ -68,6 +70,31 @@ public class PhysicalGearedMotor {
      */
     public double getRotation() {
         return unitsToRotation(motor.getCurrentPosition());
+    }
+
+    public double getRawTargetPosition() {
+        return motor.getTargetPosition();
+    }
+    public double getRawCurPosition() {
+        return motor.getCurrentPosition();
+    }
+
+    /**
+     * Switch this motor into raw setPower-mode (disregarding target rotations)
+     * @return Chainer
+     */
+    public PhysicalGearedMotor makeRaw() {
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        return this;
+    }
+
+    /**
+     * Switch this motor into target rotation/position mode.
+     * @return Chainer
+     */
+    public PhysicalGearedMotor makePhysical() {
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        return this;
     }
 
     /**

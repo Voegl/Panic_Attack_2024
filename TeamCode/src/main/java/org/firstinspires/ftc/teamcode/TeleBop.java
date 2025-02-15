@@ -35,6 +35,7 @@ public class TeleBop extends OpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         ));
         imu.initialize(imuParams);
+        imu.resetYaw();
         fieldCentric = new FieldCentric(imu);
 
         mecanumDrive = new MecanumDrive(
@@ -59,17 +60,12 @@ public class TeleBop extends OpMode {
                 PhysicalGearedMotor.TicksPerRevolution.RevHDHexMotor
         );
         slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slides.initDistanceMode(0.0003); // 1/20 cm per degree
+        slides.initDistanceMode(0.0003);
         slides.setInvertedMode(true);
 
         handServo = new PhysicalServo(hardwareMap.get(Servo.class, "grijpservo"));
-        handServo.setRotation(0);
-
         handRotServo = new PhysicalServo(hardwareMap.get(Servo.class, "hoekservo"));
-        handRotServo.setRotation(0);
-
         containerServo = new PhysicalServo(hardwareMap.get(Servo.class, "bakje"));
-        containerServo.setRotation(0);
     }
 
     @Override
@@ -89,24 +85,36 @@ public class TeleBop extends OpMode {
             handRotServo.setRotation(108);
         }
 
-        arm.setPower(ControlUtils.discreteAxis(gamepad1.right_bumper, gamepad1.left_bumper));
+        telemetry.addData("Motor t-position", arm.getRawTargetPosition());
+        telemetry.addData("Motor c-position", arm.getRawCurPosition());
+        telemetry.addData("Gripper servo pos (deg)", handServo.getRotation());
+        telemetry.addData("Gripper servo pos (unit)", handServo.getRotation() / 270.0);
+
+        telemetry.update();
+
+//        if (gamepad2.right_trigger >= 0.1 || gamepad2.left_trigger >= 0.1) {
+//            arm.setPower(ControlUtils.discreteAxis(gamepad2.right_trigger, gamepad2.left_trigger));
+//        }
 
         // Gripper rotation [gamepad 1]
         if (gamepad1.x) // grip
-            handServo.setRotation(162);
+            handServo.setRotation(150);
         else if (gamepad1.y) // release
-            handServo.setRotation(108);
+            handServo.setRotation(127);
 
         // Slides [gamepad 1]
-        if (gamepad1.dpad_up) // up
-            slides.moveTo(1);
-        else if (gamepad1.dpad_down) // down
+        if (gamepad1.dpad_up) { // up
+            slides.setPower(1.0);
+            slides.moveTo(1); // that's not true; TODO correct this
+        } else if (gamepad1.dpad_down) { // down
+            slides.setPower(0.5);
             slides.moveTo(0);
+        }
 
         // Bakje [gamepad 1]
         if (gamepad1.dpad_left) // drop
             containerServo.setRotation(180);
         else if (gamepad1.dpad_right) // hold
-            containerServo.setRotation(0);
+            containerServo.setRotation(45);
     }
 }
